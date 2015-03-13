@@ -2,6 +2,7 @@
 #               2012  three18ti
 #               2012  Rémi "binbashfr"
 #               2014  Chris Boot <bootc@bootc.net>
+#               2015  Ernestas Lukoševičius <ernestas@samesystem.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,11 +18,11 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 metadata :name => "apt",
-         :description => "Debian APT service",
-         :author => "Chris Boot, based on work by Mark Stanislav",
+         :description => "Debian/Ubuntu APT service",
+         :author => "Ernestas Lukosevicius, based on work by Mark Stanislav and Chris Boot",
          :license => "GPLv2",
-         :version => "1.4",
-         :url => "https://github.com/bootc/mcollective-apt",
+         :version => "1.5",
+         :url => "https://github.com/ernetas/mcollective-apt",
          :timeout => 600
 
 requires :mcollective => "2.2.1"
@@ -90,6 +91,14 @@ action "distupgrade", :description => "Perform System Dist-Upgrade" do
 end
 
 action "configure_pending", :description => "Configure all pending packages" do
+    display :always
+
+    output :status,
+           :description => "Command execution status",
+           :display_as  => "Status"
+end
+
+action "autoremove", :description => "Perform system autoremove" do
     display :always
 
     output :status,

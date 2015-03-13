@@ -21,7 +21,7 @@ class MCollective::Application::Apt<MCollective::Application
 
   usage <<-END_OF_USAGE
 mco apt [OPTIONS] [FILTERS] <ACTION> [CONCURRENCY|MESSAGE]
-Usage: mco apt <upgrades|installed|clean|update|upgrade|distupgrade|configure_pending>
+Usage: mco apt <upgrades|installed|clean|update|upgrade|distupgrade|configure_pending|autoremove>
 
 The ACTION can be one of the following:
 
@@ -33,13 +33,14 @@ The ACTION can be one of the following:
     upgrade     - perform an apt-get upgrade
     distupgrade - perform an apt-get dist-upgrade
     configure_pending - configure all pending packages
+    autoremove  - perform an apt-get autoremove
 END_OF_USAGE
 
   def post_option_parser(configuration)
     if ARGV.length >= 1
       configuration[:command] = ARGV.shift
 
-      unless ["upgrades", "installed", "clean", "update", "upgrade", "distupgrade", "configure_pending"].include?(configuration[:command])
+      unless ["upgrades", "installed", "clean", "update", "upgrade", "distupgrade", "configure_pending", "autoremove"].include?(configuration[:command])
         raise_message(1)
       end
     else
@@ -48,7 +49,7 @@ END_OF_USAGE
   end
 
   def raise_message(message, *args)
-    messages = {1 => "Action must be upgrades, installed, clean, update, upgrade, distupgrade or configure_pending",
+    messages = {1 => "Action must be upgrades, installed, clean, update, upgrade, distupgrade, configure_pending or autoremove",
                 2 => "Please specify a command.",
                 6 => "Do not know how to handle the '%s' command"}
 
@@ -163,6 +164,12 @@ END_OF_USAGE
 
   def configure_pending_command
     display_results_status(client.configure_pending)
+    printrpcstats :summarize => true
+    halt client.stats
+  end
+
+  def autoremove_command
+    display_results_status(client.autoremove)
     printrpcstats :summarize => true
     halt client.stats
   end

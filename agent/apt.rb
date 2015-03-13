@@ -2,6 +2,7 @@
 #               2012  three18ti
 #               2012  Rémi "binbashfr"
 #               2014  Chris Boot <bootc@bootc.net>
+#               2015  Ernestas Lukoševičius <ernestas@samesystem.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -68,6 +69,11 @@ module MCollective
       action "configure_pending" do
         reply[:status] = run("/usr/bin/dpkg --configure --pending",
                              :environment => { 'DEBIAN_FRONTEND' => 'noninteractive' })
+      end
+
+      action "autoremove" do
+        reply[:status] = run("/usr/bin/apt-get autoremove -o DPkg::options::='--force-confdef' -o Dpkg::Options::='--force-confold' -y",
+                             :environment => { 'APT_LISTCHANGES_FRONTEND' => 'mail', 'DEBIAN_FRONTEND' => 'noninteractive' })
       end
     end
   end
